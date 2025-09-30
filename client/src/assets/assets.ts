@@ -6,6 +6,7 @@ import help_icon from './help_icon.svg?url';
 import logo_icon from './logo_icon.svg?url';
 import send_icon from './send_icon.svg?url';
 import gallery_icon from './gallery_icon.svg?url';
+import arrow_icon from './arrow_icon.png?url';
 import type {User} from "../types/User.ts";
 import type {Message} from "../types/Message.ts";
 
@@ -17,7 +18,8 @@ const assets = {
     logo_icon,
     help_icon,
     send_icon,
-    gallery_icon
+    gallery_icon,
+    arrow_icon
 };
 
 export default assets;
