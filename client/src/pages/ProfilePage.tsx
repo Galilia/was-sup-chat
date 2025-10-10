@@ -1,16 +1,33 @@
 import {FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import assets from "../assets/assets";
+import {useAuth} from "../../context/AuthContext";
 
 const ProfilePage = () => {
+    console.log('------>')
     const navigate = useNavigate();
+    const {authUser, updateProfile} = useAuth();
+
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
     const [name, setName] = useState('Martin Johnson');
     const [bio, setBio] = useState('Hi everyone! I am using ChatApp.');
 
-    const onSubmitHandler = (event: FormEvent) => {
+    const onSubmitHandler = async (event: FormEvent) => {
         event.preventDefault();
-        navigate('/');
+        if (!selectedImg) {
+            await updateProfile({fullName: name, bio});
+            navigate('/');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedImg);
+        reader.onload = async () => {
+            const base64Img = reader.result;
+            await updateProfile({fullName: name, bio, profilePic: base64Img});
+            navigate('/');
+        }
+
     }
 
     return (

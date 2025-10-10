@@ -25,10 +25,10 @@ export const signup = async (req, res) => {
             fullName, email, password: hashedPassword, bio
         })
 
-        const token = generateToken(newUser._id)
-
         const savedUser = await newUser.save();
-        const {password, ...userData} = savedUser.toObject();
+        const {password: _, ...userData} = savedUser.toObject();
+
+        const token = generateToken(newUser._id);
 
         res.json({success: true, userData, token, message: "Account created successfully"})
     } catch (error) {
@@ -61,7 +61,13 @@ export const login = async (req, res) => {
 
 // Controller to check if user is authenticated
 export const checkAuth = async (req, res) => {
-    res.json({success: true, user: req.user})
+    try {
+        const userData = req.user.toObject ? req.user.toObject() : req.user;
+        res.json({success: true, user: userData});
+    } catch (error) {
+        console.error(error);
+        res.json({success: false, message: error.message});
+    }
 }
 
 // Controller to update user profile details

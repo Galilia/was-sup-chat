@@ -1,5 +1,6 @@
 import assets from "../assets/assets";
 import {FormEvent, useState} from "react";
+import {useAuth} from "../../context/AuthContext";
 
 const enum AuthState {
     SIGN_UP = "Sign up",
@@ -7,6 +8,8 @@ const enum AuthState {
 }
 
 const LoginPage = () => {
+    const {login} = useAuth();
+
     const [currState, setCurrState] = useState(AuthState.SIGN_UP);
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -21,6 +24,8 @@ const LoginPage = () => {
             setIsDataSubmitted(true);
             return;
         }
+
+        login(currState === AuthState.SIGN_UP ? "signup" : "login", {fullName, email, password, bio});
     }
 
     return (
