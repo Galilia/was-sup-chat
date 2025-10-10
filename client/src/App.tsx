@@ -1,13 +1,17 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
-import ProfilePage from "./pages/ProfilePage.tsx";
 import {Toaster} from "react-hot-toast";
 import {AuthContext, useAuth} from "../context/AuthContext";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
-    const {authUser} = useAuth();
-    console.log('authUser:', authUser);
+    const {authUser, authLoading} = useAuth();
+  
+    if (authLoading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="bg-[url('./src/assets/bgImage.svg')] bg-contain">
             <Toaster/>

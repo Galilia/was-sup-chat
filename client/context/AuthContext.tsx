@@ -9,6 +9,7 @@ axios.defaults.baseURL = backendUrl;
 interface AuthContextType {
     axios: typeof axios;
     authUser: any;
+    authLoading: boolean;
     onlineUsers: any[];
     socket: Socket | null;
     login: (state: string, credentials: any) => Promise<void>;
@@ -23,6 +24,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({children}) => {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [authUser, setAuthUser] = useState<Socket | null>(null);
+    const [authLoading, setAuthLoading] = useState(true);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [socket, setSocket] = useState(null);
 
@@ -51,6 +53,8 @@ export const AuthProvider = ({children}) => {
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setAuthLoading(false);
         }
     }
 
@@ -108,6 +112,7 @@ export const AuthProvider = ({children}) => {
     const value = {
         axios,
         authUser,
+        authLoading,
         onlineUsers,
         socket,
         login,
