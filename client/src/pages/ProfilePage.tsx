@@ -4,13 +4,12 @@ import assets from "../assets/assets";
 import {useAuth} from "../../context/AuthContext";
 
 const ProfilePage = () => {
-    console.log('------>')
     const navigate = useNavigate();
     const {authUser, updateProfile} = useAuth();
 
-    const [selectedImg, setSelectedImg] = useState<string | null>(null);
-    const [name, setName] = useState('Martin Johnson');
-    const [bio, setBio] = useState('Hi everyone! I am using ChatApp.');
+    const [selectedImg, setSelectedImg] = useState<File | null>(null);
+    const [name, setName] = useState(authUser.fullName);
+    const [bio, setBio] = useState(authUser.bio);
 
     const onSubmitHandler = async (event: FormEvent) => {
         event.preventDefault();
@@ -44,8 +43,9 @@ const ProfilePage = () => {
                 cursor-pointer'>
                         <input onChange={(event) => {
                             const file = event.target.files?.[0];
+                            console.log('file', file);
                             if (file) {
-                                setSelectedImg(URL.createObjectURL(file));
+                                setSelectedImg(file);
                             } else {
                                 setSelectedImg(null);
                             }
@@ -68,12 +68,11 @@ const ProfilePage = () => {
 
                     <button type="submit" className="bg-gradient-to-r from-purple-400
     to-violet-600 text-white p-2 rounded-full text-lg cursor-pointer">Save
-                    </
-                        button>
+                    </button>
                 </form>
 
-                <img src={assets.logo_icon} alt=""
-                     className="w-[min(30vw,150px)] aspect-square rounded-full mx-10 max-sm:mt-10"/>
+                <img src={authUser.profilePic || assets.logo_icon} alt=""
+                     className={`w-[min(30vw,150px)] aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && 'rounded-full'}`}/>
             </div>
         </div>
     )

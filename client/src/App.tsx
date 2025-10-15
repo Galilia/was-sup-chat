@@ -7,11 +7,11 @@ import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
     const {authUser, authLoading} = useAuth();
-  
+
     if (authLoading) {
         return <div>Loading...</div>;
     }
-
+    console.log('authUser', authUser)
     return (
         <div className="bg-[url('./src/assets/bgImage.svg')] bg-contain">
             <Toaster/>

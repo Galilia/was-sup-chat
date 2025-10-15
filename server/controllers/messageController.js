@@ -9,13 +9,13 @@ export const getUsersForSidebar = async (req, res) => {
     try {
         const currentUserId = req.user._id;
 
-        const filteredUsers = User.find({
+        const filteredUsers = await User.find({
             _id: {$ne: currentUserId}
         }).select("-password");
 
         // Count number of messages not seen
         const unseenMessages = {};
-        const promises = filteredUsers.map(async (user) => {
+        const promises = filteredUsers?.map(async (user) => {
             const messages = await Message.find({
                 senderId: user._id,
                 receiverId: currentUserId,

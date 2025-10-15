@@ -7,7 +7,6 @@ import logo_icon from './logo_icon.svg?url';
 import send_icon from './send_icon.svg?url';
 import gallery_icon from './gallery_icon.svg?url';
 import arrow_icon from './arrow_icon.png?url';
-import type {User} from "../types/User.ts";
 import type {Message} from "../types/Message.ts";
 
 const assets = {
@@ -23,39 +22,6 @@ const assets = {
 };
 
 export default assets;
-
-export const userDummyData = [
-    {
-        _id: '1',
-        fullName: 'Иван Иванов',
-        profilePic: avatar_icon,
-        bio: 'Люблю путешествовать и фотографировать',
-    },
-    {
-        _id: '2',
-        fullName: 'Мария Петрова',
-        profilePic: avatar_girl_icon,
-        bio: 'Фанатка книг и кофе',
-    },
-    {
-        _id: '3',
-        fullName: 'Алексей Смирнов',
-        profilePic: avatar_icon,
-        bio: 'Программист и геймер',
-    },
-    {
-        _id: '4',
-        fullName: 'Ольга Кузнецова',
-        profilePic: avatar_girl_icon,
-        bio: 'Йога и здоровый образ жизни',
-    },
-    {
-        _id: '5',
-        fullName: 'Давид Петренко',
-        profilePic: avatar_icon,
-        bio: 'Музыкант и путешественник',
-    },
-] as User[];
 
 export const messagesDummyData: Message[] = [
     {

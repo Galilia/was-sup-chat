@@ -41,18 +41,18 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const {email, password} = req.body;
-        const userData = await User.findOne({email});
+        const user = await User.findOne({email});
 
-        if (!userData) return res.json({success: false, error: "User not found"});
+        if (!user) return res.json({success: false, error: "User not found"});
 
-        const isPasswordCorrect = await bcrypt.compare(password, userData.password);
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
         if (!isPasswordCorrect) return res.json({success: false, error: "Invalid Credentials"});
 
-        const token = generateToken(userData._id);
-        const {password: pwd, ...user} = userData.toObject();
+        const token = generateToken(user._id);
+        const {password: pwd, ...userData} = user.toObject();
 
-        res.json({success: true, user, token, message: "Login Successful"})
+        res.json({success: true, userData, token, message: "Login Successful"})
     } catch (error) {
         console.error(error.message);
         res.json({success: false, message: error.message});
