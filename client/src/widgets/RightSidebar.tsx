@@ -1,26 +1,30 @@
-import assets from "../shared/assets/assets";
-import {useChat} from "../../context/ChatContext";
-import {useAuth} from "../../context/AuthContext";
+import index from "../shared/assets";
+import {useChat} from "../app/providers/chat/ChatContext";
+import {useAuth} from "../app/providers/auth/AuthContext";
 import {useEffect, useState} from "react";
 
 const RightSidebar = () => {
     const {selectedUser, messages} = useChat();
     const {logout, onlineUsers} = useAuth();
 
-    const [msgImages, setMsgImages] = useState([]);
+    const [msgImages, setMsgImages] = useState<string[]>([]);
 
     // Get all the images from the messages and set them to state
     useEffect(() => {
         setMsgImages(
-            messages.filter(msg => msg.image).map(msg => msg.image)
-        )
+            messages
+                .filter(msg => msg.image)
+                .map(msg => msg.image)
+                .filter((img): img is string => Boolean(img))
+        );
     }, [messages]);
+
 
     return selectedUser && (
         <div
             className={`bg-[#818582]/10 text-white w-full relative overflow-y-scroll ${selectedUser ? "max-md:hidden" : ""}`}>
             <div className='pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
-                <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
+                <img src={selectedUser?.profilePic || index.avatar_icon} alt=""
                      className='w-20 aspect-[1/1] rounded-full'/>
                 <h1 className='px-10 text-xl font-medium mx-auto flex items-center gap-2'>
                     {onlineUsers.includes(selectedUser._id) && <p className='w-2 h-2 rounded-full bg-green-500'></p>}

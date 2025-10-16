@@ -1,8 +1,8 @@
 import {Navigate, Route, Routes} from "react-router-dom";
-import HomePage from "./pages/HomePage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 import {Toaster} from "react-hot-toast";
-import {useAuth} from "../context/AuthContext";
+import {useAuth} from "./app/providers/auth/AuthContext";
 import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
@@ -17,9 +17,24 @@ const App = () => {
             <Toaster/>
 
             <Routes>
-                <Route path="/" element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
-                <Route path="/login" element={!authUser ? <LoginPage/> : <Navigate to="/"/>}/>
-                <Route path="/profile" element={authUser ? <ProfilePage/> : <Navigate to="/login"/>}/>
+                <Route
+                    path="/"
+                    element={
+                        (authUser ? <HomePage/> : <Navigate to="/login" replace/>) as React.ReactElement
+                    }
+                />
+                <Route
+                    path="/login"
+                    element={
+                        (!authUser ? <LoginPage/> : <Navigate to="/" replace/>) as React.ReactElement
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        (authUser ? <ProfilePage/> : <Navigate to="/login" replace/>) as React.ReactElement
+                    }
+                />
             </Routes>
         </div>
     )

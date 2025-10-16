@@ -1,16 +1,18 @@
-import assets from "../shared/assets/assets";
-import {FormEvent, useState} from "react";
-import {useAuth} from "../../context/AuthContext";
+import assets from "@/shared/assets";
+import {type FormEvent, useState} from "react";
+import {useAuth} from "../app/providers/auth/AuthContext";
 
-const enum AuthState {
-    SIGN_UP = "Sign up",
-    LOGIN = "Login"
-}
+const AuthState = {
+    SIGN_UP: "Sign up",
+    LOGIN: "Login"
+} as const;
+
+type AuthStateType = (typeof AuthState)[keyof typeof AuthState];
 
 const LoginPage = () => {
     const {login} = useAuth();
 
-    const [currState, setCurrState] = useState(AuthState.SIGN_UP);
+    const [currState, setCurrState] = useState<AuthStateType>(AuthState.SIGN_UP);
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

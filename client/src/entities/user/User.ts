@@ -3,6 +3,7 @@ export type User = {
     fullName: string;
     gender?: string;
     profilePic?: string;
+    bio?: string;
 }
 
 export type Credentials = Record<string, unknown>;

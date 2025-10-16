@@ -1,15 +1,15 @@
-import {FormEvent, useState} from "react";
+import {type FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import assets from "../shared/assets/assets";
-import {useAuth} from "../../context/AuthContext";
+import {useAuth} from "../app/providers/auth/AuthContext";
+import assets from "../shared/assets";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
     const {authUser, updateProfile} = useAuth();
 
     const [selectedImg, setSelectedImg] = useState<File | null>(null);
-    const [name, setName] = useState(authUser.fullName);
-    const [bio, setBio] = useState(authUser.bio);
+    const [name, setName] = useState<string>(authUser?.fullName ?? "");
+    const [bio, setBio] = useState<string>(authUser?.bio ?? "");
 
     const onSubmitHandler = async (event: FormEvent) => {
         event.preventDefault();
@@ -23,7 +23,11 @@ const ProfilePage = () => {
         reader.readAsDataURL(selectedImg);
         reader.onload = async () => {
             const base64Img = reader.result;
-            await updateProfile({fullName: name, bio, profilePic: base64Img});
+            await updateProfile({
+                fullName: name,
+                bio,
+                profilePic: typeof base64Img === "string" ? base64Img : undefined
+            });
             navigate('/');
         }
 
@@ -71,7 +75,7 @@ const ProfilePage = () => {
                     </button>
                 </form>
 
-                <img src={authUser.profilePic || assets.logo_icon} alt=""
+                <img src={authUser?.profilePic || assets.logo_icon} alt=""
                      className={`w-[min(30vw,150px)] aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && 'rounded-full'}`}/>
             </div>
         </div>

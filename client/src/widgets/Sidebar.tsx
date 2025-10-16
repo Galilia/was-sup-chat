@@ -1,8 +1,7 @@
-import assets from '../shared/assets/assets.ts'
+import assets from "@/shared/assets";
 import {useNavigate} from "react-router-dom";
-import type {User} from "../entities/user/User.ts";
-import {useAuth} from "../../context/AuthContext";
-import {useChat} from "../../context/ChatContext";
+import type {User} from "@/entities/user/User.ts";
+import {useAuth, useChat} from "@/app/providers";
 import {useEffect, useState} from "react";
 
 
@@ -28,8 +27,7 @@ const Sidebar = () => {
     useEffect(() => {
         getUsers();
     }, [onlineUsers])
-    console.log('filteredUsers', filteredUsers);
-    console.log('users', users);
+
     return (
         <div className={'bg-[#818582]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white' +
             ` ${selectedUser ? "max-md:hidden" : ""}`}>
@@ -63,7 +61,8 @@ const Sidebar = () => {
                     <div key={index}
                          onClick={() => {
                              setSelectedUser(user);
-                             setUnseenMessages(prev => ({...prev, [user._id]: 0}));
+                             // @ts-ignore
+                             setUnseenMessages(prev => ({...prev, [user?._id]: 0}));
                          }}
                          className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm 
                         ${selectedUser?._id === user._id && 'bg-gray-700/50'}`}>

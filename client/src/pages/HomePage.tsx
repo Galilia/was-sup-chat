@@ -1,7 +1,7 @@
-import Sidebar from "../widgets/Sidebar.tsx";
-import ChatContainer from "../widgets/ChatContainer.tsx";
-import RightSidebar from "../widgets/RightSidebar.tsx";
-import {useChat} from "../../context/ChatContext";
+import Sidebar from "../widgets/Sidebar";
+import ChatContainer from "../widgets/ChatContainer";
+import RightSidebar from "../widgets/RightSidebar";
+import {useChat} from "../app/providers/chat/ChatContext";
 
 const HomePage = () => {
     const {selectedUser} = useChat();

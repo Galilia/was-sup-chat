@@ -1,0 +1,1 @@
+export type {Message, SendMessage} from './model/types/Message'

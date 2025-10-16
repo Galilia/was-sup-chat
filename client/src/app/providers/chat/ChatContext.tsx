@@ -1,9 +1,9 @@
 import {createContext, useCallback, useContext, useEffect, useState} from "react";
-import {useAuth} from "./AuthContext";
+import {useAuth} from "../auth/AuthContext";
 import toast from "react-hot-toast";
-import {type User} from "../src/entities/user/User";
-import type {Message, SendMessage} from "../src/entities/message/Message";
-import {getErrorMessage} from "../src/shared/lib/utils";
+import {type User} from "../../../entities/user/User";
+import type {Message, SendMessage} from "../../../entities/message/model/types/Message";
+import {getErrorMessage} from "../../../shared/lib/utils";
 
 interface ChatContextType {
     messages: Message[];

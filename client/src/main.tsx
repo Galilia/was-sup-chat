@@ -1,9 +1,9 @@
 import {createRoot} from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+import App from './App'
 import {BrowserRouter} from "react-router-dom";
-import {AuthProvider} from "../context/AuthContext";
-import {ChatProvider} from "../context/ChatContext";
+import {AuthProvider} from "./app/providers/auth/AuthContext";
+import {ChatProvider} from "./app/providers/chat/ChatContext";
 
 createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
