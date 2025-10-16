@@ -1,4 +1,4 @@
-import assets from "../assets/assets";
+import assets from "../shared/assets/assets";
 import {FormEvent, useState} from "react";
 import {useAuth} from "../../context/AuthContext";
 

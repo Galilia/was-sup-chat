@@ -1,6 +1,6 @@
-import Sidebar from "../components/Sidebar.tsx";
-import ChatContainer from "../components/ChatContainer.tsx";
-import RightSidebar from "../components/RightSidebar.tsx";
+import Sidebar from "../widgets/Sidebar.tsx";
+import ChatContainer from "../widgets/ChatContainer.tsx";
+import RightSidebar from "../widgets/RightSidebar.tsx";
 import {useChat} from "../../context/ChatContext";
 
 const HomePage = () => {

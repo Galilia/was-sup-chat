@@ -1,6 +1,6 @@
 import {FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import assets from "../assets/assets";
+import assets from "../shared/assets/assets";
 import {useAuth} from "../../context/AuthContext";
 
 const ProfilePage = () => {

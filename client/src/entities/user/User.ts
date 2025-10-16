@@ -4,3 +4,5 @@ export type User = {
     gender?: string;
     profilePic?: string;
 }
+
+export type Credentials = Record<string, unknown>;

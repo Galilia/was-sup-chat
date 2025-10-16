@@ -1,4 +1,4 @@
-import assets from "../assets/assets";
+import assets from "../shared/assets/assets";
 import {useChat} from "../../context/ChatContext";
 import {useAuth} from "../../context/AuthContext";
 import {useEffect, useState} from "react";

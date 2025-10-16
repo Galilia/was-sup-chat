@@ -1,6 +1,6 @@
-import assets from '../assets/assets.ts'
+import assets from '../shared/assets/assets.ts'
 import {useNavigate} from "react-router-dom";
-import type {User} from "../types/User.ts";
+import type {User} from "../entities/user/User.ts";
 import {useAuth} from "../../context/AuthContext";
 import {useChat} from "../../context/ChatContext";
 import {useEffect, useState} from "react";

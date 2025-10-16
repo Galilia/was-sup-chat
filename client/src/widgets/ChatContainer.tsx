@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
-import assets from "../assets/assets.ts";
-import {formatMessageTime} from "../lib/utils.ts";
+import assets from "../shared/assets/assets.ts";
+import {formatMessageTime} from "../shared/lib/utils.ts";
 import {useChat} from "../../context/ChatContext";
 import {useAuth} from "../../context/AuthContext";
 import toast from "react-hot-toast";
