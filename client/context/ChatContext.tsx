@@ -2,7 +2,7 @@ import {createContext, useCallback, useContext, useEffect, useState} from "react
 import {useAuth} from "./AuthContext";
 import toast from "react-hot-toast";
 import {User} from "../src/types/User";
-import {Message} from "../src/types/Message";
+import {Message, SendMessage} from "../src/types/Message";
 
 interface ChatContextType {
     messages: Message[];
@@ -58,9 +58,9 @@ export const ChatProvider = ({children}) => {
     }
 
     // function to send message to selected user
-    const sendMessage = async (messageData) => {
+    const sendMessage = async ({text, image}: SendMessage) => {
         try {
-            const {data} = await axios.post(`/api/messages/send/${selectedUser._id}`, {messageData});
+            const {data} = await axios.post(`/api/messages/send/${selectedUser._id}`, {text, image});
             if (data.success) {
                 setMessages(prev => [...prev, data.newMessage]);
             } else {

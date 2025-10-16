@@ -8,7 +8,7 @@ import {useEffect, useState} from "react";
 
 const Sidebar = () => {
     const navigate = useNavigate();
-    const {logout} = useAuth();
+    const {logout, onlineUsers} = useAuth();
     const {
         selectedUser,
         users,
@@ -27,8 +27,9 @@ const Sidebar = () => {
 
     useEffect(() => {
         getUsers();
-    }, [])
-
+    }, [onlineUsers])
+    console.log('filteredUsers', filteredUsers);
+    console.log('users', users);
     return (
         <div className={'bg-[#818582]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white' +
             ` ${selectedUser ? "max-md:hidden" : ""}`}>
@@ -59,9 +60,11 @@ const Sidebar = () => {
                 {usersLoading && <p>Loading...</p>}
 
                 {!usersLoading && filteredUsers?.map((user: User, index) => (
-                    <div key={index} onClick={() => {
-                        setSelectedUser(user)
-                    }}
+                    <div key={index}
+                         onClick={() => {
+                             setSelectedUser(user);
+                             setUnseenMessages(prev => ({...prev, [user._id]: 0}));
+                         }}
                          className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm 
                         ${selectedUser?._id === user._id && 'bg-gray-700/50'}`}>
                         <img src={user?.profilePic || assets.avatar_icon} alt=""
@@ -69,7 +72,7 @@ const Sidebar = () => {
                         <div className='flex flex-col leading-5'>
                             <p>{user.fullName}</p>
                             {
-                                users.includes(user._id)
+                                onlineUsers.includes(user._id)
                                     ? <span className='text-green-400 text-xs'>Online</span>
                                     : <span className='text-neutral-400 text-xs'>Offline</span>
                             }

@@ -4,3 +4,8 @@ export type Message = {
     image?: string;
     createdAt: string;
 };
+
+export type SendMessage = {
+    text?: string;
+    image?: string;
+}
