@@ -23,7 +23,7 @@ repo/
 │     └─ shared/
 └─ server/
    ├─ routes/
-   └─ server.js
+   └─ server.ts
 
 ```
 
@@ -43,5 +43,5 @@ CLOUDINARY_API_SECRET = replace_me_with_cloudinary_secret
 ```
 
 Server reads variables via `process.env.*`.  
-Add at the top of `server.js` (or your bootstrap file):
+Add at the top of `server.ts` (or your bootstrap file):
 

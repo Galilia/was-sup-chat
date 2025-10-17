@@ -1,4 +1,4 @@
-import FriendRequest from '../models/FriendRequest.js'
+import FriendRequest from '../models/FriendRequest.ts'
 
 const normPair = (u1, u2) => {
     const s1 = String(u1), s2 = String(u2);

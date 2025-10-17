@@ -1,5 +1,5 @@
 import express from "express";
-import {protectRoute} from "../middleware/auth.js";
+import {protectRoute} from "../middleware/auth.ts";
 import {
     createRequest,
     getContacts,

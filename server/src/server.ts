@@ -1,21 +1,14 @@
-import express from 'express';
 import "dotenv/config";
-import cors from 'cors';
 import http from 'http';
 import {connectDB} from "./lib/db.js";
-import userRouter from "./routes/userRoutes.js";
-import messageRouter from "./routes/messageRoutes.js";
 import {Server} from 'socket.io';
-import contactRouter from "./routes/contactRoutes.js";
+import app from "./app.js";
 
 // Create Express app and HTTP server
-const app = express();
 const server = http.createServer(app);
 
 // Initialize Socket.io
-export const io = new Server(server, {
-    cors: {origin: '*'}
-})
+export const io = new Server(server, {cors: {origin: '*'}})
 
 // Store online users
 export const userSocketMap = {};
@@ -35,16 +28,6 @@ io.on('connection', (socket) => {
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     })
 })
-
-// Middleware setup
-app.use(express.json({limit: "4mb"}));
-app.use(cors());
-
-// Routes Setup
-app.use("/api/status", (req, res) => res.send("Server is live"));
-app.use("/api/auth", userRouter);
-app.use("/api/messages", messageRouter);
-app.use('/api/contacts', contactRouter);
 
 
 // Connect to MongoDB
