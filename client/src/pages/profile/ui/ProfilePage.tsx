@@ -1,9 +1,9 @@
 import {type FormEvent, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "../app/providers/auth/AuthContext";
-import assets from "../shared/assets";
+import {useAuth} from "../../../app/providers/auth/AuthContext";
+import assets from "../../../shared/assets";
 
-const ProfilePage = () => {
+export const ProfilePage = () => {
     const navigate = useNavigate();
     const {authUser, updateProfile} = useAuth();
 
@@ -34,8 +34,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className='min-h-screen bg-cover bg-no-repeat flex items-center
-    justify-center'>
+        <div className='min-h-screen bg-cover bg-no-repeat flex items-center justify-center'>
 
             <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2
         border-gray-600 flex items-center justify-between max-sm:flex-col-reverse
@@ -47,7 +46,7 @@ const ProfilePage = () => {
                 cursor-pointer'>
                         <input onChange={(event) => {
                             const file = event.target.files?.[0];
-                            console.log('file', file);
+
                             if (file) {
                                 setSelectedImg(file);
                             } else {
@@ -81,5 +80,3 @@ const ProfilePage = () => {
         </div>
     )
 }
-
-export default ProfilePage;

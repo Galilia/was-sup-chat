@@ -1,6 +1,6 @@
 import assets from "@/shared/assets";
 import {type FormEvent, useState} from "react";
-import {useAuth} from "../app/providers/auth/AuthContext";
+import {useAuth} from "../../../app/providers/auth/AuthContext";
 
 const AuthState = {
     SIGN_UP: "Sign up",
@@ -9,7 +9,7 @@ const AuthState = {
 
 type AuthStateType = (typeof AuthState)[keyof typeof AuthState];
 
-const LoginPage = () => {
+export const LoginPage = () => {
     const {login} = useAuth();
 
     const [currState, setCurrState] = useState<AuthStateType>(AuthState.SIGN_UP);
@@ -103,5 +103,3 @@ const LoginPage = () => {
         </div>
     )
 }
-
-export default LoginPage;

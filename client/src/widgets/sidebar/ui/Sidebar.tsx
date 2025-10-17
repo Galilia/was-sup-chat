@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import type {User} from "@/entities/user/User.ts";
 import {useAuth, useChat} from "@/app/providers";
 import {useEffect, useState} from "react";
+import {SidebarSkeleton} from "@/shared/ui/loader";
 
 
 const Sidebar = () => {
@@ -19,7 +20,7 @@ const Sidebar = () => {
     } = useChat();
 
     const [input, setInput] = useState('');
-    console.log('input', input);
+
     const filteredUsers = input.length === 0
         ? users
         : users?.filter(user => user.fullName.toLowerCase().includes(input.toLowerCase()));
@@ -27,6 +28,8 @@ const Sidebar = () => {
     useEffect(() => {
         getUsers();
     }, [onlineUsers])
+
+    if (usersLoading) return <SidebarSkeleton/>;
 
     return (
         <div className={'bg-[#818582]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white' +
