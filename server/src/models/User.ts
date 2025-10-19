@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import {model, type Model, Schema} from "mongoose";
 
 export interface IUser {
     _id: string;
@@ -13,7 +13,7 @@ export interface IUser {
 
 export type AuthUser = Omit<IUser, "password">;
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema<IUser>({
     email: {type: String, required: true, unique: true},
     fullName: {type: String, required: true},
     password: {type: String, required: true, minlength: 6},
@@ -21,6 +21,5 @@ const userSchema = new mongoose.Schema({
     bio: {type: String},
 }, {timestamps: true});
 
-const User = mongoose.model("User", userSchema);
-
+const User: Model<IUser> = model("User", userSchema);
 export default User;
