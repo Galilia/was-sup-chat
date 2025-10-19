@@ -24,10 +24,13 @@ export const SidebarContactsList = (props: SidebarContactsListProps) => {
         : contacts?.filter(user => user.fullName.toLowerCase().includes(input.toLowerCase()));
 
     if (loading) return null;
+    if (filtered?.length === 0) return (
+        <p className='text-xs text-neutral-500'>No contacts found.</p>
+    )
 
     return (
         <div className='flex flex-col'>
-            {filtered?.map((user: User, index) => (
+            {filtered?.map((user: User) => (
                 <button key={user._id}
                         onClick={() => {
                             setSelectedUser(user);

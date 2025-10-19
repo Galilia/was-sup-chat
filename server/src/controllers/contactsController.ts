@@ -3,6 +3,8 @@ import {Response} from "express";
 import {AuthRequest} from "../lib/types";
 import {handleErrorResponse} from "../lib/utils";
 import Friendship from "../models/Friendship";
+import User from "../models/User";
+import {Types} from "mongoose";
 
 const normPair = (u1: string | number, u2: string | number) => {
     const s1 = String(u1), s2 = String(u2);
@@ -12,14 +14,17 @@ const normPair = (u1: string | number, u2: string | number) => {
 // GET /api/contacts
 export const getContacts = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.user?._id;
+        const userId = req.user!._id;
+        const me = new Types.ObjectId(userId);
+
         const list = await Friendship.aggregate([
-            {$match: {$or: [{a: userId}, {b: userId}]}},
-            {$project: {friendId: {$cond: [{$eq: ['$a', userId]}, '$b', '$a']}}},
-            {$lookup: {from: 'users', localField: 'friendId', foreignField: '_id', as: 'friend'}},
-            {$unwind: '$friend'},
-            {$project: {_id: '$friend._id', fullName: '$friend.fullName', profilePic: '$friend.profilePic'}}
+            {$match: {$or: [{a: me}, {b: me}]}},                              // ← use a/b
+            {$project: {friendId: {$cond: [{$eq: ["$a", me]}, "$b", "$a"]}}}, // compare with ObjectId
+            {$lookup: {from: "users", localField: "friendId", foreignField: "_id", as: "friend"}},
+            {$unwind: "$friend"},
+            {$project: {_id: "$friend._id", fullName: "$friend.fullName", profilePic: "$friend.profilePic"}}
         ]);
+
         res.json({success: true, contacts: list});
     } catch (error) {
         handleErrorResponse(res, error);
@@ -109,7 +114,7 @@ export const removeContact = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?._id;
         const {friendId} = req.params;
-        
+
         if (!userId || !friendId) {
             return res.status(400).json({success: false, error: "Missing userId or friendId"});
         }
@@ -120,5 +125,47 @@ export const removeContact = async (req: AuthRequest, res: Response) => {
         res.json({success: true});
     } catch (error) {
         handleErrorResponse(res, error);
+    }
+};
+
+export const searchUsers = async (req: AuthRequest, res: Response) => {
+    try {
+        const q = (req.query.q as string | undefined)?.trim() ?? "";
+        if (q.length <= 1) return res.json({success: true, users: []});
+
+        const meId = req.user!._id;
+        const me = new Types.ObjectId(meId);
+
+        const friendEdges = await Friendship.find({$or: [{a: me}, {b: me}]}) // ← a/b
+            .select("a b")
+            .lean();
+
+        const friendIds = new Set<string>(
+            friendEdges.map(e => String(String(e.a) === String(me) ? e.b : e.a))
+        );
+
+        const pending = await FriendRequest.find({
+            $or: [{from: me}, {to: me}],
+            status: "pending"
+        }).select("from to").lean();
+
+        const pendingIds = new Set<string>();
+        for (const r of pending) {
+            if (String(r.from) !== meId) pendingIds.add(String(r.from));
+            if (String(r.to) !== meId) pendingIds.add(String(r.to));
+        }
+
+        const users = await User.find({
+            _id: {$ne: me},
+            fullName: {$regex: q, $options: "i"}
+        })
+            .select("_id fullName profilePic")
+            .limit(20)
+            .lean();
+
+        const filtered = users.filter(u => !friendIds.has(String(u._id)) && !pendingIds.has(String(u._id)));
+        return res.json({success: true, users: filtered});
+    } catch (e: any) {
+        return res.status(500).json({success: false, message: e.message ?? "Search failed"});
     }
 };

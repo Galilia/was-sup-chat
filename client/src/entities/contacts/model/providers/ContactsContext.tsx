@@ -67,7 +67,7 @@ export const ContactsProvider = ({children}: any) => {
     const searchUsers = useCallback(async (q: string) => {
         if (!q.trim()) return [];
         try {
-            const {data} = await axios.get(`/api/users/search?q=${encodeURIComponent(q)}`);
+            const {data} = await axios.get(`/api/contacts/search?q=${encodeURIComponent(q)}`);
             return data.users ?? [];
         } catch {
             return [];

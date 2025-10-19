@@ -60,7 +60,7 @@ const ChatContainer = () => {
         <div className='h-full overflow-scroll relative backdrop-blur-lg'>
             <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500'>
                 <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
-                     className="W-8 rounded-full"/>
+                     className="max-w-[40px] max-h-[40px] rounded-full"/>
                 <p className='flex-1 text-lg text-white flex items-center gap-2'>
                     {selectedUser.fullName}
                     {onlineUsers.includes(selectedUser._id) &&

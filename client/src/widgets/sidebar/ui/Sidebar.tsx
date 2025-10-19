@@ -12,12 +12,11 @@ import {SidebarAddList} from "./sidebar-add-list/SidebarAddList";
 
 export const Sidebar = () => {
     const {onlineUsers} = useAuth();
-    const {loading, getContacts, getRequests, searchUsers} = useContacts();
+    const {loading, getContacts, getRequests} = useContacts();
     const {selectedUser} = useChat();
 
     const [input, setInput] = useState('');
     const [tab, setTab] = useState<SidebarTab>("contacts");
-    const [searchResults, setSearchResults] = useState<any[]>([]);
 
     useEffect(() => {
         getContacts();
@@ -26,14 +25,6 @@ export const Sidebar = () => {
     useEffect(() => {
         getRequests();
     }, []);
-
-    useEffect(() => {
-        if (tab === "add" && input.trim().length > 1) {
-            (async () => setSearchResults(await searchUsers(input.trim())))();
-        } else {
-            setSearchResults([]);
-        }
-    }, [tab, input, searchUsers]);
 
     if (loading) return <SidebarSkeleton/>;
 
