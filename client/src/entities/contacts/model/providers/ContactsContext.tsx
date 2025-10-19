@@ -1,17 +1,7 @@
 import {createContext, useCallback, useContext, useEffect, useState} from "react";
-import {useAuth} from "../auth/AuthContext";
+import {useAuth} from "../../../../app/providers/auth/AuthContext";
 import toast from "react-hot-toast";
-import {User} from "@/entities/user/User";
-
-export type Contact = Pick<User, "_id" | "fullName" | "profilePic">;
-export type ContactRequestStatus = "pending" | "accepted" | "declined" | "blocked";
-export type ContactRequest = {
-    _id: string;
-    from?: Contact;
-    to?: Contact;
-    status: ContactRequestStatus;
-    createdAt: string;
-};
+import {Contact, ContactRequest} from "../types/Contacts";
 
 type ContactsCtx = {
     contacts: Contact[];

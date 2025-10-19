@@ -8,7 +8,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "noEmit": false,
-    "outDir": "./.tsbuild/node"
+    "outDir": "./.tsbuild/node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
   "include": [
     "vite.config.ts",

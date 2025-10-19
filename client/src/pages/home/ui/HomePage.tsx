@@ -1,7 +1,7 @@
 import Sidebar from "@/widgets/sidebar";
 import ChatContainer from "@/widgets/ChatContainer";
 import RightSidebar from "@/widgets/RightSidebar";
-import {useChat} from "../../../app/providers/chat/ChatContext";
+import {useChat} from "../../../entities/message/model/providers/ChatContext";
 
 export const HomePage = () => {
     const {selectedUser} = useChat();

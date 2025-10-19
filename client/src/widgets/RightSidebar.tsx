@@ -1,5 +1,5 @@
 import index from "../shared/assets";
-import {useChat} from "../app/providers/chat/ChatContext";
+import {useChat} from "../entities/message/model/providers/ChatContext";
 import {useAuth} from "../app/providers/auth/AuthContext";
 import {useEffect, useState} from "react";
 

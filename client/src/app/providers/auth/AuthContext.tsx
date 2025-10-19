@@ -2,7 +2,7 @@ import {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import {io, type Socket} from "socket.io-client";
-import type {Credentials, User} from "../../../entities/user/User";
+import type {Credentials, User} from "../../../entities/user/model/types/User";
 import {getErrorMessage} from "../../../shared/lib/utils";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";

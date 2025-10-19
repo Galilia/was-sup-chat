@@ -1,7 +1,7 @@
 import assets from "@/shared/assets";
 import {useAuth, useChat} from "@/app/providers";
-import type {User} from "@/entities/user/User";
-import {useContacts} from "@/app/providers/contacts/ContactsContext";
+import type {User} from "@/entities/user";
+import {useContacts} from "@/entities/contacts";
 
 interface SidebarContactsListProps {
     input: string;

@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import assets from "@/shared/assets";
 import {formatMessageTime} from "../shared/lib/utils";
-import {useChat} from "../app/providers/chat/ChatContext";
+import {useChat} from "../entities/message/model/providers/ChatContext";
 import {useAuth} from "../app/providers/auth/AuthContext";
 import toast from "react-hot-toast";
 
