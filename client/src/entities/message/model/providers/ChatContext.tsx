@@ -3,7 +3,7 @@ import {useAuth} from "../../../../app/providers/auth/AuthContext";
 import toast from "react-hot-toast";
 import {type User} from "../../../user/model/types/User";
 import type {Message, SendMessage} from "../types/Message";
-import {getErrorMessage} from "../../../../shared/lib/utils";
+import {getErrorMessage} from "../../../../shared/lib/utils/common";
 
 interface ChatContextType {
     messages: Message[];
