@@ -1,14 +1,18 @@
-import FriendRequest from '../models/FriendRequest.ts'
+import FriendRequest from '../models/FriendRequest'
+import {Response} from "express";
+import {AuthRequest} from "../lib/types";
+import {handleErrorResponse} from "../lib/utils";
+import Friendship from "../models/Friendship";
 
-const normPair = (u1, u2) => {
+const normPair = (u1: string | number, u2: string | number) => {
     const s1 = String(u1), s2 = String(u2);
     return s1 < s2 ? {a: u1, b: u2} : {a: u2, b: u1};
 };
 
 // GET /api/contacts
-export const getContacts = async (req, res) => {
+export const getContacts = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user?._id;
         const list = await Friendship.aggregate([
             {$match: {$or: [{a: userId}, {b: userId}]}},
             {$project: {friendId: {$cond: [{$eq: ['$a', userId]}, '$b', '$a']}}},
@@ -17,31 +21,34 @@ export const getContacts = async (req, res) => {
             {$project: {_id: '$friend._id', fullName: '$friend.fullName', profilePic: '$friend.profilePic'}}
         ]);
         res.json({success: true, contacts: list});
-    } catch (e) {
-        res.status(500).json({success: false, message: e.message});
+    } catch (error) {
+        handleErrorResponse(res, error);
     }
 };
 
 // GET /api/contacts/requests (входящие + исходящие)
-export const getRequests = async (req, res) => {
+export const getRequests = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user?._id;
         const incoming = await FriendRequest.find({to: userId, status: 'pending'})
             .populate('from', 'fullName profilePic');
         const outgoing = await FriendRequest.find({from: userId, status: 'pending'})
             .populate('to', 'fullName profilePic');
         res.json({success: true, incoming, outgoing});
-    } catch (e) {
-        res.status(500).json({success: false, message: e.message});
+    } catch (error) {
+        handleErrorResponse(res, error);
     }
 };
 
 // POST /api/contacts/request/:targetId
-export const createRequest = async (req, res) => {
+export const createRequest = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user?._id;
         const {targetId} = req.params;
 
+        if (!userId || !targetId) {
+            return res.status(400).json({success: false, error: "Missing userId or targetId"});
+        }
         if (String(userId) === String(targetId))
             return res.status(400).json({success: false, message: 'Cannot add yourself'});
 
@@ -54,15 +61,15 @@ export const createRequest = async (req, res) => {
         const fr = await FriendRequest.create({from: userId, to: targetId, status: 'pending'});
         // TODO: socket.io notify the recipient (to)
         res.json({success: true, request: fr, message: 'Request sent'});
-    } catch (e) {
-        res.status(500).json({success: false, message: e.message});
+    } catch (error) {
+        handleErrorResponse(res, error);
     }
 };
 
 // POST /api/contacts/respond  body: { requestId, action: 'accept'|'decline'|'block' }
-export const respondRequest = async (req, res) => {
+export const respondRequest = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user?._id;
         const {requestId, action} = req.body;
 
         const fr = await FriendRequest.findById(requestId);
@@ -71,7 +78,7 @@ export const respondRequest = async (req, res) => {
         }
 
         if (action === 'accept') {
-            const p = normPair(fr.from, fr.to);
+            const p = normPair(String(fr.from), String(fr.to));
             await Friendship.updateOne(p, {$setOnInsert: {...p}}, {upsert: true});
             fr.status = 'accepted';
             await fr.save();
@@ -92,21 +99,26 @@ export const respondRequest = async (req, res) => {
         }
 
         res.status(400).json({success: false, message: 'Unknown action'});
-    } catch (e) {
-        res.status(500).json({success: false, message: e.message});
+    } catch (error) {
+        handleErrorResponse(res, error);
     }
 };
 
 // DELETE /api/contacts/:friendId
-export const removeContact = async (req, res) => {
+export const removeContact = async (req: AuthRequest, res: Response) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user?._id;
         const {friendId} = req.params;
+        
+        if (!userId || !friendId) {
+            return res.status(400).json({success: false, error: "Missing userId or friendId"});
+        }
+
         const p = normPair(userId, friendId);
         await Friendship.deleteOne(p);
         // TODO: socket notify both
         res.json({success: true});
-    } catch (e) {
-        res.status(500).json({success: false, message: e.message});
+    } catch (error) {
+        handleErrorResponse(res, error);
     }
 };

@@ -1,20 +1,21 @@
 // Get all users except the logged user
 
-import User from "../models/User.ts";
-import Message from "../models/Message.ts";
-import cloudinary from "../lib/cloudinary.ts";
-import {io, userSocketMap} from "../server.ts";
+import User from "../models/User";
+import Message from "../models/Message";
+import cloudinary from "../lib/cloudinary";
+import {io, userSocketMap} from "../server";
+import {Response} from "express";
+import {handleErrorResponse} from "../lib/utils";
+import {AuthRequest} from "../lib/types";
 
-export const getUsersForSidebar = async (req, res) => {
+export const getUsersForSidebar = async (req: AuthRequest, res: Response) => {
     try {
-        const currentUserId = req.user._id;
+        const currentUserId = req.user?._id;
 
-        const filteredUsers = await User.find({
-            _id: {$ne: currentUserId}
-        }).select("-password");
+        const filteredUsers = await User.find({_id: {$ne: currentUserId}}).select("-password");
 
         // Count number of messages not seen
-        const unseenMessages = {};
+        const unseenMessages: { [key: string]: number } = {};
         const promises = filteredUsers?.map(async (user) => {
             const messages = await Message.find({
                 senderId: user._id,
@@ -23,23 +24,22 @@ export const getUsersForSidebar = async (req, res) => {
             });
 
             if (messages.length > 0) {
-                unseenMessages[user._id] = messages.length;
+                unseenMessages[String(user._id)] = messages.length;
             }
         });
 
         await Promise.all(promises);
         res.json({success: true, filteredUsers, unseenMessages});
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
 
 // Get all messages for selected user
-export const getMessages = async (req, res) => {
+export const getMessages = async (req: AuthRequest, res: Response) => {
     try {
         const {id: selectedUserId} = req.params;
-        const currentUserId = req.user._id;
+        const currentUserId = req.user?._id;
 
         const messages = await Message.find({
             $or: [
@@ -52,31 +52,30 @@ export const getMessages = async (req, res) => {
 
         res.json({success: true, messages});
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
 
 // api to mark messages as seen
-export const markMessagesAsSeen = async (req, res) => {
+export const markMessagesAsSeen = async (req: AuthRequest, res: Response) => {
     try {
         const {id} = req.params;
-        await Message.findByIdAndUpdate(id, {seen: true});
+        const currentUserId = req.user?._id;
 
-        await Message.updateMany({senderId: selectedUserId, receiverId: currentUserId}, {seen: true})
+        await Message.findByIdAndUpdate(id, {seen: true});
+        await Message.updateMany({senderId: id, receiverId: currentUserId}, {seen: true})
         res.json({success: true, message: "Messages marked as seen"});
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
 
 // Send message to selected user
-export const sendMessage = async (req, res) => {
+export const sendMessage = async (req: AuthRequest, res: Response) => {
     try {
         const {text, image} = req.body;
         const receiverId = req.params.id;
-        const senderId = req.user._id;
+        const senderId = req.user?._id;
 
         let imageUrl;
         if (image) {
@@ -95,7 +94,6 @@ export const sendMessage = async (req, res) => {
 
         res.json({success: true, newMessage});
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }

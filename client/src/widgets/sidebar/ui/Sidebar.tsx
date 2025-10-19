@@ -1,6 +1,6 @@
 import assets from "@/shared/assets";
 import {useNavigate} from "react-router-dom";
-import type {User} from "@/entities/user/User.ts";
+import type {User} from "@/entities/user/User";
 import {useAuth, useChat} from "@/app/providers";
 import {useEffect, useState} from "react";
 import {SidebarSkeleton} from "@/shared/ui/loader";

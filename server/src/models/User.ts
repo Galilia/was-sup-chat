@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 
+export interface IUser {
+    _id: string;
+    email: string;
+    fullName: string;
+    password: string;
+    profilePic?: string;
+    bio?: string | null | undefined;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type AuthUser = Omit<IUser, "password">;
+
 const userSchema = new mongoose.Schema({
     email: {type: String, required: true, unique: true},
     fullName: {type: String, required: true},

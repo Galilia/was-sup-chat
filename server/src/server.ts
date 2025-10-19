@@ -11,20 +11,20 @@ const server = http.createServer(app);
 export const io = new Server(server, {cors: {origin: '*'}})
 
 // Store online users
-export const userSocketMap = {};
+export const userSocketMap: { [key: string]: string } = {};
 // Socket.io connection handler
 io.on('connection', (socket) => {
     const userId = socket.handshake.query.userId;
     console.log('User Connected: ', userId);
 
-    if (userId) userSocketMap[userId] = socket.id;
+    if (userId) userSocketMap[String(userId)] = socket.id;
 
     // Emit online users to all connected clients
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
     socket.on('disconnect', () => {
         console.log('User Disconnected', userId);
-        delete userSocketMap[userId];
+        delete userSocketMap[String(userId)];
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     })
 })

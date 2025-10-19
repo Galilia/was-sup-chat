@@ -1,11 +1,13 @@
-import User from "../models/User.ts";
+import User from "../models/User";
 
 import bcrypt from "bcryptjs";
-import {generateToken} from "../lib/utils.ts";
-import cloudinary from "../lib/cloudinary.ts";
+import {generateToken, handleErrorResponse} from "../lib/utils";
+import cloudinary from "../lib/cloudinary";
+import {Response} from "express";
+import {AuthRequest} from "../lib/types";
 
 // Signup a new user
-export const signup = async (req, res) => {
+export const signup = async (req: AuthRequest, res: Response) => {
     const {fullName, email, password, bio} = req.body;
 
     try {
@@ -28,17 +30,16 @@ export const signup = async (req, res) => {
         const savedUser = await newUser.save();
         const {password: _, ...userData} = savedUser.toObject();
 
-        const token = generateToken(newUser._id);
+        const token = generateToken(String(newUser._id));
 
         res.json({success: true, userData, token, message: "Account created successfully"})
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
 
 // Controller for user login
-export const login = async (req, res) => {
+export const login = async (req: AuthRequest, res: Response) => {
     try {
         const {email, password} = req.body;
         const user = await User.findOne({email});
@@ -49,33 +50,30 @@ export const login = async (req, res) => {
 
         if (!isPasswordCorrect) return res.json({success: false, error: "Invalid Credentials"});
 
-        const token = generateToken(user._id);
+        const token = generateToken(String(user._id));
         const {password: pwd, ...userData} = user.toObject();
 
         res.json({success: true, userData, token, message: "Login Successful"})
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
 
 // Controller to check if user is authenticated
-export const checkAuth = async (req, res) => {
+export const checkAuth = async (req: AuthRequest, res: Response) => {
     try {
-        const userData = req.user.toObject ? req.user.toObject() : req.user;
-        res.json({success: true, user: userData});
+        res.json({success: true, user: req.user});
     } catch (error) {
-        console.error(error);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
 
 // Controller to update user profile details
-export const updateProfile = async (req, res) => {
+export const updateProfile = async (req: AuthRequest, res: Response) => {
     try {
         const {fullName, bio, profilePic} = req.body;
 
-        const userId = req.user._id;
+        const userId = req.user?._id;
         let updatedUser;
 
         if (!profilePic) {
@@ -92,7 +90,6 @@ export const updateProfile = async (req, res) => {
 
         res.json({success: true, user: updatedUser});
     } catch (error) {
-        console.error(error.message);
-        res.json({success: false, message: error.message});
+        handleErrorResponse(res, error);
     }
 }
