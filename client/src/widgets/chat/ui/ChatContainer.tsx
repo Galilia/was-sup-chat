@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {type FormEvent, type KeyboardEvent, useEffect, useRef, useState} from 'react';
 import assets from "@/shared/assets";
 import {formatMessageTime} from "../../../shared/lib/utils/common";
 import {useChat} from "../../../entities/message/model/providers/ChatContext";
@@ -20,11 +20,12 @@ export const ChatContainer = () => {
 
     const [input, setInput] = useState('');
 
-    const handleSendMessage = async (e: React.FormEvent | React.KeyboardEvent) => {
+    const handleSendMessage = async (e: FormEvent | KeyboardEvent) => {
         e.preventDefault();
         if (input.trim() === "") return null;
         await sendMessage({text: input.trim()});
         setInput('');
+        return null;
     }
 
     // handle sending image

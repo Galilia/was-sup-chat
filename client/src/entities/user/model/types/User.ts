@@ -1,6 +1,8 @@
 export type User = {
     _id: string;
+    email?: string;
     fullName: string;
+
     gender?: string;
     profilePic?: string;
     bio?: string;

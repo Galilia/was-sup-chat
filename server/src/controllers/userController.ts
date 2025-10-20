@@ -8,7 +8,7 @@ import {AuthRequest} from "../lib/types";
 
 // Signup a new user
 export const signup = async (req: AuthRequest, res: Response) => {
-    const {fullName, email, password, bio} = req.body;
+    const {fullName, email, password, gender, bio} = req.body;
 
     try {
         if (!fullName || !email || !password) {
@@ -24,7 +24,7 @@ export const signup = async (req: AuthRequest, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            fullName, email, password: hashedPassword, bio
+            fullName, email, password: hashedPassword, gender, bio
         })
 
         const savedUser = await newUser.save();
@@ -71,19 +71,20 @@ export const checkAuth = async (req: AuthRequest, res: Response) => {
 // Controller to update user profile details
 export const updateProfile = async (req: AuthRequest, res: Response) => {
     try {
-        const {fullName, bio, profilePic} = req.body;
+        const {fullName, gender, bio, profilePic} = req.body;
 
         const userId = req.user?._id;
         let updatedUser;
 
         if (!profilePic) {
-            User.findByIdAndUpdate(userId, {fullName, bio}, {new: true});
+            User.findByIdAndUpdate(userId, {fullName, gender, bio}, {new: true});
         } else {
             const upload = await cloudinary.uploader.upload(profilePic);
 
             updatedUser = await User.findByIdAndUpdate(userId, {
                 profilePic: upload.secure_url,
                 fullName,
+                gender,
                 bio
             }, {new: true});
         }
