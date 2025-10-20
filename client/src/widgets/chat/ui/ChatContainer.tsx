@@ -1,11 +1,11 @@
 import {useEffect, useRef, useState} from 'react';
 import assets from "@/shared/assets";
-import {formatMessageTime} from "../shared/lib/utils/common";
-import {useChat} from "../entities/message/model/providers/ChatContext";
-import {useAuth} from "../app/providers/auth/AuthContext";
+import {formatMessageTime} from "../../../shared/lib/utils/common";
+import {useChat} from "../../../entities/message/model/providers/ChatContext";
+import {useAuth} from "../../../app/providers/auth/AuthContext";
 import toast from "react-hot-toast";
 
-const ChatContainer = () => {
+export const ChatContainer = () => {
     const {
         messages,
         selectedUser,
@@ -127,5 +127,3 @@ const ChatContainer = () => {
         </div>
     )
 }
-
-export default ChatContainer;

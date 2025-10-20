@@ -3,7 +3,7 @@ import {useChat} from "../entities/message/model/providers/ChatContext";
 import {useAuth} from "../app/providers/auth/AuthContext";
 import {useEffect, useState} from "react";
 
-const RightSidebar = () => {
+const ChatImages = () => {
     const {selectedUser, messages} = useChat();
     const {logout, onlineUsers} = useAuth();
 
@@ -56,4 +56,4 @@ const RightSidebar = () => {
     )
 }
 
-export default RightSidebar;
+export default ChatImages;
