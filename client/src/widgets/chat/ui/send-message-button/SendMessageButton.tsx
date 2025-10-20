@@ -11,7 +11,7 @@ interface SendMessageButtonProps {
 }
 
 export const SendMessageButton = ({selectedUser}: SendMessageButtonProps) => {
-    const {sendMessage} = useChat();
+    const {sendMessage, sendVoiceMessage} = useChat();
 
     const [input, setInput] = useState('');
     const [recOpen, setRecOpen] = useState(false);
@@ -83,7 +83,7 @@ export const SendMessageButton = ({selectedUser}: SendMessageButtonProps) => {
                     targetUserId={selectedUser._id}
                     onClose={() => setRecOpen(false)}
                     onSent={({url, mime, dur}) => {
-                        sendMessage({audioUrl: url, mime, duration: dur, type: "audio"} as any);
+                        sendVoiceMessage({audioUrl: url, mime, duration: dur});
                         setRecOpen(false);
                     }}
                 />

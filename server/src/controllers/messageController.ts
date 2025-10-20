@@ -1,7 +1,7 @@
 // Get all users except the logged user
 
 import User from "../models/User";
-import Message from "../models/Message";
+import Message, {IMessage} from "../models/Message";
 import cloudinary from "../lib/cloudinary";
 import {io, userSocketMap} from "../server";
 import {Response} from "express";
@@ -97,3 +97,47 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
         handleErrorResponse(res, error);
     }
 }
+
+// Send audio message to selected user
+export const createAudioMessage = async (req: AuthRequest, res: Response) => {
+    try {
+        const toUserId = req.params.id;
+        const fromUserId = req.user?._id;
+        const file = req.file;
+        const rawDur = Number(req.body.duration);
+        const duration = Number.isFinite(rawDur) && rawDur >= 0 ? rawDur : null;
+
+        if (!file) return res.status(400).json({error: "No file"});
+
+        const b64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+        const up = await cloudinary.uploader.upload(b64, {
+            resource_type: "video",
+            folder: `voice/${fromUserId}-${toUserId}`,
+            public_id: `voice-${Date.now()}`,
+            use_filename: true,
+            unique_filename: false,
+            overwrite: false,
+        });
+
+        const doc = await Message.create({
+            senderId: fromUserId,
+            receiverId: toUserId,
+            type: "audio",
+            audioUrl: up.secure_url,
+            mime: file.mimetype,
+            duration,
+        });
+
+        // broadcast (using imported io singleton)
+        io.to(fromUserId.toString()).emit("new-message", doc);
+        io.to(toUserId.toString()).emit("new-message", doc);
+
+        return res.json({
+            url: (doc as IMessage).audioUrl,
+            mime: (doc as IMessage).mime,
+            duration: (doc as IMessage).duration,
+        });
+    } catch (error) {
+        handleErrorResponse(res, error);
+    }
+};

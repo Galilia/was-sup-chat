@@ -1,2 +1,2 @@
-export type {Message, SendMessage} from './model/types/Message'
+export type {Message, SendMessage, VoiceMessage} from './model/types/Message'
 export {ChatProvider, useChat} from './model/providers/ChatContext'
