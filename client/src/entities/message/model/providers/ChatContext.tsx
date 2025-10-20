@@ -3,7 +3,6 @@ import {useAuth} from "../../../../app/providers/auth/AuthContext";
 import toast from "react-hot-toast";
 import {type User} from "../../../user/model/types/User";
 import type {Message, SendMessage} from "../types/Message";
-import {VoiceMessage} from "../types/Message";
 import {getErrorMessage} from "../../../../shared/lib/utils/common";
 
 interface ChatContextType {
@@ -14,7 +13,7 @@ interface ChatContextType {
     setUnseenMessages: (unseen: Record<string, number>) => void;
     getMessages: (userId: string) => Promise<void>;
     sendMessage: (messageData: SendMessage) => Promise<void>;
-    sendVoiceMessage: ({audioUrl, mime, duration}: VoiceMessage) => Promise<void>;
+    sendVoiceMessage: (file: File, duration: number) => Promise<void>;
 }
 
 const defaultChatContext: ChatContextType = {
@@ -67,20 +66,17 @@ export const ChatProvider = ({children}: any) => {
         }
     };
 
-    const sendVoiceMessage = async ({audioUrl, mime, duration}: VoiceMessage) => {
+    const sendVoiceMessage = async (file: File, duration: number) => {
         try {
-            const resp = await fetch(audioUrl);
-            const buf = await resp.arrayBuffer();
-            const ext = mime.includes("ogg") ? "ogg" : "webm";
-            const file = new File([buf], `voice-${Date.now()}.${ext}`, {type: mime});
-
             const formData = new FormData();
             formData.append("file", file);
             formData.append("duration", String(Math.round(duration)));
 
-            await axios.post(`/api/messages/voice/${selectedUser?._id}`, formData, {
+            const {data} = await axios.post(`/api/messages/voice/${selectedUser?._id}`, formData, {
                 headers: {"Content-Type": "multipart/form-data"},
             });
+            if (data.success) setMessages((prev) => [...prev, data.newMessage as Message]);
+            else toast.error(data.message);
         } catch (error) {
             toast.error(getErrorMessage(error));
         }

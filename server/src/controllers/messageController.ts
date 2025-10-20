@@ -1,7 +1,7 @@
 // Get all users except the logged user
 
 import User from "../models/User";
-import Message, {IMessage} from "../models/Message";
+import Message from "../models/Message";
 import cloudinary from "../lib/cloudinary";
 import {io, userSocketMap} from "../server";
 import {Response} from "express";
@@ -119,7 +119,7 @@ export const createAudioMessage = async (req: AuthRequest, res: Response) => {
             overwrite: false,
         });
 
-        const doc = await Message.create({
+        const newMessage = await Message.create({
             senderId: fromUserId,
             receiverId: toUserId,
             type: "audio",
@@ -132,11 +132,7 @@ export const createAudioMessage = async (req: AuthRequest, res: Response) => {
         io.to(fromUserId.toString()).emit("new-message", doc);
         io.to(toUserId.toString()).emit("new-message", doc);
 
-        return res.json({
-            url: (doc as IMessage).audioUrl,
-            mime: (doc as IMessage).mime,
-            duration: (doc as IMessage).duration,
-        });
+        return res.json({success: true, newMessage});
     } catch (error) {
         handleErrorResponse(res, error);
     }

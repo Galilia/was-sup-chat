@@ -1,12 +1,14 @@
 import {useEffect, useRef, useState} from "react";
+import {useChat} from "@/entities/message";
 
 type Props = {
     targetUserId: string;
     onClose: () => void;
-    onSent: (payload: { url: string; mime: string; dur: number }) => void;
 };
 
 export default function VoiceRecorderOverlay({targetUserId, onClose, onSent}: Props) {
+    const {sendVoiceMessage} = useChat();
+
     const [recording, setRecording] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [elapsed, setElapsed] = useState(0);
@@ -95,18 +97,7 @@ export default function VoiceRecorderOverlay({targetUserId, onClose, onSent}: Pr
         const ext = mime.includes("ogg") ? "ogg" : "webm";
         const file = new File([buf], `voice-${Date.now()}.${ext}`, {type: mime});
 
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("duration", String(Math.round(duration)));
-
-        const r = await fetch(`/api/messages/voice/${targetUserId}`, {method: "POST", body: fd});
-        if (!r.ok) {
-            setError("Upload failed");
-            return;
-        }
-        const data = await r.json(); // { url, mime, duration }
-
-        onSent({url: data.url, mime: data.mime, dur: data.duration});
+        sendVoiceMessage({file, duration});
         onClose();
     };
 
