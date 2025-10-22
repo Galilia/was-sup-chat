@@ -6,7 +6,7 @@ type Props = {
     onClose: () => void;
 };
 
-export default function VoiceRecorderOverlay({targetUserId, onClose, onSent}: Props) {
+export default function VoiceRecorderOverlay({targetUserId, onClose}: Props) {
     const {sendVoiceMessage} = useChat();
 
     const [recording, setRecording] = useState(false);
@@ -97,7 +97,7 @@ export default function VoiceRecorderOverlay({targetUserId, onClose, onSent}: Pr
         const ext = mime.includes("ogg") ? "ogg" : "webm";
         const file = new File([buf], `voice-${Date.now()}.${ext}`, {type: mime});
 
-        sendVoiceMessage({file, duration});
+        sendVoiceMessage(file, duration);
         onClose();
     };
 
