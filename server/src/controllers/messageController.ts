@@ -129,8 +129,10 @@ export const createAudioMessage = async (req: AuthRequest, res: Response) => {
         });
 
         // broadcast (using imported io singleton)
-        io.to(fromUserId.toString()).emit("new-message", doc);
-        io.to(toUserId.toString()).emit("new-message", doc);
+        if (fromUserId && toUserId) {
+            io.to(fromUserId.toString()).emit("new-message", newMessage);
+            io.to(toUserId.toString()).emit("new-message", newMessage);
+        }
 
         return res.json({success: true, newMessage});
     } catch (error) {

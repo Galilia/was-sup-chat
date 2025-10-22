@@ -1,8 +1,8 @@
 import "dotenv/config";
 import http from 'http';
-import {connectDB} from "./lib/db.js";
+import {connectDB} from "./lib/db";
 import {Server} from 'socket.io';
-import app from "./app.js";
+import app from "./app";
 
 // Create Express app and HTTP server
 const server = http.createServer(app);
