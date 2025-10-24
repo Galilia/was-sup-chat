@@ -29,14 +29,19 @@ io.on('connection', (socket) => {
     })
 })
 
+async function startServer() {
+    await connectDB();
 
-// Connect to MongoDB
-await connectDB();
-
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = Number(process.env.PORT) || 5000;
-    server.listen(PORT, () => console.log(`Server is running on PORT: ${PORT}`));
+    if (process.env.NODE_ENV !== 'production') {
+        const PORT = Number(process.env.PORT) || 3000;
+        server.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`));
+    }
 }
+
+startServer().catch((err) => {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+});
 
 // Export server for Vercel
 export default server;
