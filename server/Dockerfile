@@ -1,28 +1,36 @@
 # ---------- build stage ----------
 FROM node:20-alpine AS build
+
+# Рабочая директория всего проекта
 WORKDIR /app
 
-COPY package*.json ./
-# установим только то, что нужно чтобы собрать
+# Кладём server/package*.json и tsconfig.json в /app/server
+COPY server/package*.json server/tsconfig.json ./server/
+
+# Устанавливаем зависимости и собираем именно из /app/server
+WORKDIR /app/server
 RUN npm ci
 
-COPY tsconfig.json ./
-COPY src ./src
-RUN npm run build   # -> tsc в dist
+# Копируем исходники
+COPY server/src ./src
+
+# Сборка в /app/server/dist
+RUN npm run build
 
 # ---------- runtime stage ----------
 FROM node:20-alpine AS runtime
-WORKDIR /app
+
+# Запускаемся в /app/server
+WORKDIR /app/server
 
 ENV NODE_ENV=production
-# Создадим небезопасного root-пользователя не нужно, но можно перейти на node
-USER node
 
-# скопируем только то, что нужно для запуска
-COPY --chown=node:node package*.json ./
+# Только prod-зависимости
+COPY --from=build /app/server/package*.json ./
 RUN npm ci --omit=dev
 
-COPY --chown=node:node --from=build /app/dist ./dist
+# Готовый dist
+COPY --from=build /app/server/dist ./dist
 
 EXPOSE 3000
 CMD ["node", "dist/server.js"]

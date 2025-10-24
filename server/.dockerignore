@@ -1,4 +1,9 @@
-node_modules
-npm-debug.log
-dist
+.git
 .DS_Store
+
+**/node_modules
+**/dist
+npm-debug.log
+
+client/.vite
+client/dist
