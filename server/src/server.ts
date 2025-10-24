@@ -32,10 +32,10 @@ io.on('connection', (socket) => {
 async function startServer() {
     await connectDB();
 
-    if (process.env.NODE_ENV !== 'production') {
-        const PORT = Number(process.env.PORT) || 3000;
-        server.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`));
-    }
+    const PORT = Number(process.env.PORT) || 3000;
+    const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+
+    server.listen(PORT, HOST, () => console.log(`Server listening on http://${HOST}:${PORT}`));
 }
 
 startServer().catch((err) => {
