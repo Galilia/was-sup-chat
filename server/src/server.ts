@@ -8,7 +8,15 @@ import app from "./app";
 const server = http.createServer(app);
 
 // Initialize Socket.io
-export const io = new Server(server, {cors: {origin: '*'}})
+export const io = new Server(server, {
+    cors: {
+        origin: [
+            "https://was-sup-chat-client.vercel.app",
+            "http://localhost:5173"
+        ],
+        credentials: true
+    }
+})
 
 // Store online users
 export const userSocketMap: { [key: string]: string } = {};
