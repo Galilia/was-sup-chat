@@ -7,6 +7,7 @@ import {io, userSocketMap} from "../server";
 import {Response} from "express";
 import {handleErrorResponse} from "../lib/utils";
 import {AuthRequest} from "../lib/types";
+import {NEW_MESSAGE_EVENT} from "../lib/constants";
 
 export const getUsersForSidebar = async (req: AuthRequest, res: Response) => {
     try {
@@ -89,7 +90,7 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
         // Emit the new message to the receiver if online
         const receiverSocketId = userSocketMap[receiverId];
         if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", newMessage);
+            io.to(receiverSocketId).emit(NEW_MESSAGE_EVENT, newMessage);
         }
 
         res.json({success: true, newMessage});
@@ -101,8 +102,8 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
 // Send audio message to selected user
 export const createAudioMessage = async (req: AuthRequest, res: Response) => {
     try {
-        const toUserId = req.params.id;
-        const fromUserId = req.user?._id;
+        const receiverId = req.params.id;
+        const senderId = req.user?._id;
         const file = req.file;
         const rawDur = Number(req.body.duration);
         const duration = Number.isFinite(rawDur) && rawDur >= 0 ? rawDur : null;
@@ -112,7 +113,7 @@ export const createAudioMessage = async (req: AuthRequest, res: Response) => {
         const b64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
         const up = await cloudinary.uploader.upload(b64, {
             resource_type: "video",
-            folder: `voice/${fromUserId}-${toUserId}`,
+            folder: `voice/${senderId}-${receiverId}`,
             public_id: `voice-${Date.now()}`,
             use_filename: true,
             unique_filename: false,
@@ -120,18 +121,18 @@ export const createAudioMessage = async (req: AuthRequest, res: Response) => {
         });
 
         const newMessage = await Message.create({
-            senderId: fromUserId,
-            receiverId: toUserId,
+            senderId: senderId,
+            receiverId: receiverId,
             type: "audio",
             audioUrl: up.secure_url,
             mime: file.mimetype,
             duration,
         });
 
-        // broadcast (using imported io singleton)
-        if (fromUserId && toUserId) {
-            io.to(fromUserId.toString()).emit("new-message", newMessage);
-            io.to(toUserId.toString()).emit("new-message", newMessage);
+        // Emit the new message to the receiver if online
+        const receiverSocketId = userSocketMap[receiverId];
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit(NEW_MESSAGE_EVENT, newMessage);
         }
 
         return res.json({success: true, newMessage});
