@@ -10,7 +10,7 @@ interface ChatProps {
 export const Chat = ({selectedUser}: ChatProps) => {
     const {authUser} = useAuth();
     const {messages} = useChat();
-    console.log('messages', messages);
+
     return (
         <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
             {messages.map((msg, index) => {
@@ -22,7 +22,8 @@ export const Chat = ({selectedUser}: ChatProps) => {
 
                         {msg.type === 'audio' && msg.audioUrl && (
                             <div
-                                className={`mb-8 w-4/6 p-2 rounded-xl bg-violet-500/30 text-white ${isMine ? 'rounded-br-none' : 'rounded-bl-none'}`}>
+                                className={`mb-8 w-4/6 p-2 rounded-xl text-white
+                                    ${isMine ? "bg-violet-500/30" : "bg-gray-300/30"}  ${isMine ? 'rounded-br-none' : 'rounded-bl-none'}`}>
                                 <audio controls src={(msg as any).audioUrl} className="w-full"/>
                                 {(msg as any).duration != null && (
                                     <div className="text-xs text-white/70 mt-1">
@@ -39,8 +40,8 @@ export const Chat = ({selectedUser}: ChatProps) => {
                         )}
 
                         {msg.type === 'text' && msg.text && (
-                            <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white 
-                                ${isMine ? 'rounded-br-none' : 'rounded-bl-none'}`}>
+                            <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all text-white 
+                                 ${isMine ? "bg-violet-500/30" : "bg-gray-300/30"} ${isMine ? 'rounded-br-none' : 'rounded-bl-none'}`}>
                                 {msg.text}
                             </p>
                         )}
