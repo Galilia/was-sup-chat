@@ -27,8 +27,8 @@ export function SocketProvider({children}: { children: React.ReactNode }) {
             socketRef.current = null;
         }
 
-        const s = io(import.meta.env.VITE_SIGNALING_URL as string, {
-            transports: ['websocket'],
+        const s = io(import.meta.env.VITE_BACKEND_URL as string, {
+            transports: ['websocket', 'polling'],
             withCredentials: true,
             query: {userId: authUser._id},
         });
@@ -41,7 +41,7 @@ export function SocketProvider({children}: { children: React.ReactNode }) {
     }, [authUser?._id]);
 
     const value = useMemo(() => ({socket: socketRef.current}), [socketRef.current]);
-    
+
     return (
         <SocketContext.Provider value={value}>
             {children}
