@@ -35,7 +35,6 @@ const defaultAuthContext: AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({children}: any) => {

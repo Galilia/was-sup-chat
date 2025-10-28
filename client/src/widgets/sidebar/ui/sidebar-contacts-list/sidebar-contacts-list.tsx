@@ -1,5 +1,6 @@
 import assets from "@/shared/assets";
-import {useAuth, useChat} from "@/app/providers";
+import {useAuth} from "@/app/providers";
+import {useChat} from "@/entities/message";
 import type {User} from "@/entities/user";
 import {useContacts} from "@/entities/contacts";
 

@@ -3,6 +3,7 @@ import http from 'http';
 import {connectDB} from "./lib/db";
 import {Server} from 'socket.io';
 import app from "./app";
+import {attachSignaling} from "./sockets/signaling";
 
 // Create Express app and HTTP server
 const server = http.createServer(app);
@@ -17,6 +18,8 @@ export const io = new Server(server, {
         credentials: true
     }
 })
+
+attachSignaling(io);
 
 // Store online users
 export const userSocketMap: { [key: string]: string } = {};

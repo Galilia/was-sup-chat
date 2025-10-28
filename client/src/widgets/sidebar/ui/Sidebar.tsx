@@ -1,4 +1,5 @@
-import {useAuth, useChat} from "@/app/providers";
+import {useAuth} from "@/app/providers";
+import {useChat} from "@/entities/message";
 import {useEffect, useState} from "react";
 import {SidebarSkeleton} from "@/shared/ui/loader";
 import {SidebarHeader} from "./sidebar-header/sidebar-header";

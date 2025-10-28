@@ -1,6 +1,9 @@
 import {User} from "@/entities/user";
 import assets from "@/shared/assets";
 import {useAuth} from "@/app/providers";
+import {useCall} from "@/features/calls/model/hooks/useCall";
+import VideoSvg from '@/shared/assets/icons/call/video-camera.svg?react';
+import AudioSvg from '@/shared/assets/icons/call/telephone.svg?react';
 
 interface ChatHeaderProps {
     selectedUser: User;
@@ -8,7 +11,8 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader = ({selectedUser, setSelectedUser}: ChatHeaderProps) => {
-    const {onlineUsers} = useAuth();
+    const {authUser, onlineUsers} = useAuth();
+    const call = useCall(authUser!._id, {defaultWithVideo: true});
 
     return (
         <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500'>
@@ -21,6 +25,27 @@ export const ChatHeader = ({selectedUser, setSelectedUser}: ChatHeaderProps) => 
                 {selectedUser.fullName}
                 {onlineUsers.includes(selectedUser._id) && <span className="w-2 h-2 rounded-full bg-green-500"></span>}
             </p>
+
+            <div className="flex items-center gap-2">
+                {/* Call button */}
+                <button
+                    className="rounded-full px-3 py-1 cursor-pointer"
+                    onClick={() => call.call(selectedUser._id, true)}
+                    disabled={call.state !== "idle"}
+                    title="Video call"
+                >
+                    <AudioSvg/>
+                </button>
+
+                <button
+                    className="rounded-full px-3 py-1 cursor-pointer"
+                    onClick={() => call.call(selectedUser._id, true)}
+                    disabled={call.state !== "idle"}
+                    title="Video call"
+                >
+                    <VideoSvg/>
+                </button>
+            </div>
 
             <img src={assets.dots_icon} alt=""/>
         </div>

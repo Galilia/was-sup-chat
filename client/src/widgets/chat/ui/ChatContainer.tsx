@@ -4,6 +4,7 @@ import {useChat} from "../../../entities/message/model/providers/ChatContext";
 import {ChatHeader} from "@/widgets/chat/ui/chat-header/ChatHeader";
 import {SendMessageButton} from "@/widgets/chat/ui/send-message-button/SendMessageButton";
 import {Chat} from "@/widgets/chat/ui/chat/Chat";
+import {CallFab} from "@/widgets/chat/ui/chat/call/CallFab";
 
 export const ChatContainer = () => {
     const {messages, selectedUser, setSelectedUser, getMessages} = useChat();
@@ -25,6 +26,8 @@ export const ChatContainer = () => {
     return selectedUser ? (
             <div className='h-full overflow-scroll relative backdrop-blur-lg'>
                 <ChatHeader selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
+
+                <CallFab selectedUserId={selectedUser._id}/>
 
                 <Chat selectedUser={selectedUser}/>
 
